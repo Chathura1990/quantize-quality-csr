@@ -1,12 +1,46 @@
 import { useParams, Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
+import DOMPurify from "dompurify";
 import BlogHeader from "@/components/BlogHeader";
+import CommentSection from "@/components/CommentSection";
+import ViewCounter from "@/components/ViewCounter";
 import { Badge } from "@/components/ui/badge";
-import { blogPosts } from "@/lib/blogData";
+import { fetchPostBySlug, fetchComments, recordView, recordSiteVisit } from "@/lib/api";
 
 const PostDetail = () => {
-  const { id } = useParams();
-  const post = blogPosts.find((p) => p.id === id);
+  const { slug } = useParams();
+
+  const { data: post, isLoading } = useQuery({
+    queryKey: ["post", slug],
+    queryFn: () => fetchPostBySlug(slug!),
+    enabled: !!slug,
+  });
+
+  const { data: comments = [] } = useQuery({
+    queryKey: ["comments", post?.id],
+    queryFn: () => fetchComments(post!.id),
+    enabled: !!post?.id,
+  });
+
+  useEffect(() => {
+    if (post?.id) {
+      recordView(post.id);
+      recordSiteVisit(`/post/${slug}`);
+    }
+  }, [post?.id, slug]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <BlogHeader />
+        <div className="container mx-auto px-6 max-w-3xl py-16 text-center">
+          <p className="text-muted-foreground font-body">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!post) {
     return (
@@ -20,52 +54,13 @@ const PostDetail = () => {
     );
   }
 
-  const formattedDate = new Date(post.date).toLocaleDateString("en-US", {
+  const formattedDate = new Date(post.created_at).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
 
-  // Simple markdown-like rendering
-  const renderContent = (content: string) => {
-    return content.split("\n\n").map((block, i) => {
-      if (block.startsWith("## ")) {
-        return <h2 key={i} className="font-heading text-2xl font-semibold text-foreground mt-10 mb-4">{block.slice(3)}</h2>;
-      }
-      if (block.startsWith("### ")) {
-        return <h3 key={i} className="font-heading text-xl font-semibold text-foreground mt-8 mb-3">{block.slice(4)}</h3>;
-      }
-      if (block.startsWith("```")) {
-        const code = block.replace(/```\w*\n?/, "").replace(/```$/, "");
-        return (
-          <pre key={i} className="bg-muted rounded-lg p-4 overflow-x-auto my-6 text-sm font-mono text-foreground">
-            <code>{code}</code>
-          </pre>
-        );
-      }
-      if (block.startsWith("- ")) {
-        const items = block.split("\n").filter(l => l.startsWith("- "));
-        return (
-          <ul key={i} className="list-disc list-inside space-y-1 my-4 text-foreground font-body leading-relaxed">
-            {items.map((item, j) => <li key={j}>{item.slice(2)}</li>)}
-          </ul>
-        );
-      }
-      if (block.startsWith("1. ")) {
-        const items = block.split("\n").filter(l => /^\d+\.\s/.test(l));
-        return (
-          <ol key={i} className="list-decimal list-inside space-y-1 my-4 text-foreground font-body leading-relaxed">
-            {items.map((item, j) => <li key={j}>{item.replace(/^\d+\.\s/, "")}</li>)}
-          </ol>
-        );
-      }
-      // Inline bold and code
-      const rendered = block
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-        .replace(/`(.+?)`/g, '<code class="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">$1</code>');
-      return <p key={i} className="text-foreground font-body leading-relaxed text-[16px] my-4" dangerouslySetInnerHTML={{ __html: rendered }} />;
-    });
-  };
+  const sanitizedContent = DOMPurify.sanitize(post.content);
 
   return (
     <div className="min-h-screen bg-background">
@@ -77,34 +72,46 @@ const PostDetail = () => {
             Back to posts
           </Link>
         </div>
-        <article className="pb-16">
+        <article className="pb-8">
           <header className="mb-10">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-4 flex-wrap">
               <Badge variant="secondary" className="text-[11px] uppercase tracking-wider font-body font-semibold">
                 {post.category}
               </Badge>
               <span className="text-sm text-muted-foreground font-body">{formattedDate}</span>
-              <span className="text-sm text-muted-foreground font-body">·</span>
-              <span className="text-sm text-muted-foreground font-body">{post.readTime}</span>
+              <ViewCounter count={post.view_count} />
             </div>
             <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground leading-tight mb-4">
               {post.title}
             </h1>
-            <p className="text-lg text-muted-foreground font-body leading-relaxed">
-              {post.excerpt}
-            </p>
+            {post.excerpt && (
+              <p className="text-lg text-muted-foreground font-body leading-relaxed">
+                {post.excerpt}
+              </p>
+            )}
             <div className="flex gap-2 flex-wrap mt-4">
-              {post.tags.map((tag) => (
+              {(post.tags ?? []).map((tag) => (
                 <span key={tag} className="text-xs text-muted-foreground font-body border border-border rounded-full px-2.5 py-0.5">
                   {tag}
                 </span>
               ))}
             </div>
           </header>
-          <div className="border-t border-border pt-8">
-            {renderContent(post.content)}
-          </div>
+          <div
+            className="border-t border-border pt-8 prose prose-neutral max-w-none font-body
+              [&_h2]:font-heading [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-foreground [&_h2]:mt-10 [&_h2]:mb-4
+              [&_h3]:font-heading [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-foreground [&_h3]:mt-8 [&_h3]:mb-3
+              [&_p]:text-foreground [&_p]:leading-relaxed [&_p]:my-4
+              [&_ul]:list-disc [&_ul]:list-inside [&_ul]:space-y-1 [&_ul]:my-4 [&_ul]:text-foreground
+              [&_ol]:list-decimal [&_ol]:list-inside [&_ol]:space-y-1 [&_ol]:my-4 [&_ol]:text-foreground
+              [&_pre]:bg-muted [&_pre]:rounded-lg [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre]:my-6 [&_pre]:text-sm
+              [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_code]:font-mono
+              [&_strong]:font-semibold [&_strong]:text-foreground
+              [&_a]:text-primary [&_a]:underline"
+            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+          />
         </article>
+        <CommentSection postId={post.id} comments={comments} />
       </main>
     </div>
   );
