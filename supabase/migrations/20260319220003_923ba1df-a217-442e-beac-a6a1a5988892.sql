@@ -29,10 +29,9 @@ CREATE POLICY "Posts are publicly readable"
   ON public.posts FOR SELECT
   USING (true);
 
--- Only authenticated users can insert/update/delete (admin)
-CREATE POLICY "Authenticated users can create posts"
+-- Anyone can create posts (for markdown file uploads)
+CREATE POLICY "Anyone can create posts"
   ON public.posts FOR INSERT
-  TO authenticated
   WITH CHECK (true);
 
 CREATE POLICY "Authenticated users can update posts"

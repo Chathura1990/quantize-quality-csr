@@ -46,35 +46,35 @@ const CommentSection = ({ postId, comments }: CommentSectionProps) => {
     });
 
   return (
-    <section className="mt-12 border-t border-border pt-8">
-      <h3 className="font-heading text-2xl font-semibold text-foreground mb-6">
+    <section className="mt-12 border-t border-gray-200 dark:border-gray-700 pt-8">
+      <h3 className="font-heading text-2xl font-light text-gray-500 dark:text-gray-500 mb-6">
         Comments ({comments.length})
       </h3>
 
       {/* Comment list */}
       <div className="space-y-6 mb-10">
         {comments.length === 0 && (
-          <p className="text-muted-foreground font-body text-sm">No comments yet. Be the first to share your thoughts!</p>
+          <p className="text-gray-400 dark:text-gray-500 font-body text-sm">No comments yet. Be the first to share your thoughts!</p>
         )}
         {comments.map((comment) => (
-          <div key={comment.id} className="bg-card rounded-lg p-4 border border-border">
+          <div key={comment.id} className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center">
-                <span className="text-xs font-semibold text-primary">
+              <div className="w-7 h-7 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
+                <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
                   {comment.author_name.charAt(0).toUpperCase()}
                 </span>
               </div>
-              <span className="font-body font-semibold text-sm text-foreground">{comment.author_name}</span>
-              <span className="text-xs text-muted-foreground font-body">{formatDate(comment.created_at)}</span>
+              <span className="font-body font-medium text-sm text-gray-900 dark:text-gray-100">{comment.author_name}</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500 font-body">{formatDate(comment.created_at)}</span>
             </div>
-            <p className="font-body text-sm text-foreground leading-relaxed">{comment.content}</p>
+            <p className="font-body text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{comment.content}</p>
           </div>
         ))}
       </div>
 
       {/* Comment form */}
       <form onSubmit={handleSubmit} className="space-y-4">
-        <h4 className="font-heading text-lg font-semibold text-foreground">Leave a comment</h4>
+        <h4 className="font-heading text-lg font-light text-gray-500 dark:text-gray-500">Leave a comment</h4>
         <input
           type="text"
           placeholder="Your name"
@@ -82,7 +82,7 @@ const CommentSection = ({ postId, comments }: CommentSectionProps) => {
           onChange={(e) => setName(e.target.value)}
           maxLength={100}
           required
-          className="w-full px-4 py-2.5 rounded-lg border border-border bg-card text-foreground font-body text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-body text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
         <textarea
           placeholder="Write your comment..."
@@ -91,7 +91,7 @@ const CommentSection = ({ postId, comments }: CommentSectionProps) => {
           rows={4}
           maxLength={2000}
           required
-          className="w-full px-4 py-2.5 rounded-lg border border-border bg-card text-foreground font-body text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-body text-sm placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
         />
         <Button type="submit" disabled={mutation.isPending}>
           {mutation.isPending ? "Posting..." : "Post Comment"}

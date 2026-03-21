@@ -2,22 +2,16 @@ import { Link } from "react-router-dom";
 
 const BlogHeader = () => {
   return (
-    <header className="border-b border-border">
-      <div className="container mx-auto px-6 py-6 flex items-center justify-between">
+    <header className="border-b border-gray-200 dark:border-border sticky top-0 z-50 bg-white/80 dark:bg-background/80 backdrop-blur-xl backdrop-saturate-150">
+      <div className="max-w-[820px] mx-auto px-8 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
-            <span className="font-heading text-primary-foreground text-lg font-bold">R</span>
-          </div>
-          <div>
-            <h1 className="font-heading text-xl font-semibold text-foreground leading-tight">Research Notes</h1>
-            <p className="text-xs text-muted-foreground">AI & QA Explorations</p>
-          </div>
+          <span className="font-body text-sm font-semibold tracking-wide text-emerald-600 dark:text-primary">Quantized Quality</span>
         </Link>
         <nav className="hidden sm:flex items-center gap-6">
-          <Link to="/" className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors">
+          <Link to="/" className="text-xs font-body text-gray-500 dark:text-muted-foreground hover:text-emerald-600 dark:hover:text-primary transition-colors">
             Posts
           </Link>
-          <Link to="/about" className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors">
+          <Link to="/about" className="text-xs font-body text-gray-500 dark:text-muted-foreground hover:text-emerald-600 dark:hover:text-primary transition-colors">
             About
           </Link>
         </nav>
