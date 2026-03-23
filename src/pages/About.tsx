@@ -15,29 +15,20 @@ const About = () => {
         </div>
         <article className="pb-16">
           <header className="py-12 border-b border-gray-200 dark:border-border mb-12">
-            <div className="flex items-start justify-between gap-8">
-              <div>
-                <p className="text-[11px] uppercase tracking-widest text-emerald-600 dark:text-primary font-semibold mb-4 flex items-center gap-2">
-                  <span className="w-6 h-px bg-emerald-600 dark:bg-primary inline-block"></span>
-                  About
-                </p>
-                <h1 className="font-heading text-4xl md:text-5xl font-black text-gray-900 dark:text-foreground mb-4 leading-tight">
-                  Quantized Quality
-                </h1>
-                <p className="text-gray-500 dark:text-muted-foreground font-body text-sm leading-relaxed max-w-lg">
-                  A personal space for exploring artificial intelligence, quality assurance engineering, 
-                  and the intersection where they meet.
-                </p>
-                <p className="text-gray-400 dark:text-gray-500 font-body text-sm mt-4">
-                  Chathura S. Rajapakse
-                </p>
-              </div>
-              <img 
-                src="/auther.png" 
-                alt="Author" 
-                className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-2 border-emerald-500 dark:border-primary"
-              />
-            </div>
+            <p className="text-[11px] uppercase tracking-widest text-emerald-600 dark:text-primary font-semibold mb-4 flex items-center gap-2">
+              <span className="w-6 h-px bg-emerald-600 dark:bg-primary inline-block"></span>
+              About
+            </p>
+            <h1 className="font-heading text-4xl md:text-5xl font-black text-gray-900 dark:text-foreground mb-4 leading-tight">
+              Quantized Quality
+            </h1>
+            <p className="text-gray-500 dark:text-muted-foreground font-body text-sm leading-relaxed max-w-lg">
+              A personal space for exploring artificial intelligence, quality assurance engineering, 
+              and the intersection where they meet.
+            </p>
+            <p className="text-gray-400 dark:text-gray-500 font-body text-sm mt-4">
+              Chathura S. Rajapakse
+            </p>
           </header>
           
           <div className="space-y-6 font-body text-gray-900 dark:text-foreground leading-relaxed">
