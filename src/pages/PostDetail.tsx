@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import BlogHeader from "@/components/BlogHeader";
 import CommentSection from "@/components/CommentSection";
 import { Badge } from "@/components/ui/badge";
@@ -168,23 +168,25 @@ const PostDetail = () => {
       </main>
       
       {/* Navigation Buttons */}
-      <div className="fixed right-6 bottom-6 flex flex-col gap-2 z-50">
+      <div className="fixed left-4 top-1/2 -translate-y-1/2 z-50">
         {prevPost && (
           <Link
             to={`/post/${prevPost.slug}`}
             className="w-10 h-10 rounded-full bg-gray-800 dark:bg-gray-700 border border-gray-600 dark:border-gray-500 flex items-center justify-center text-gray-300 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition-colors"
             title={`Previous: ${prevPost.title}`}
           >
-            <ChevronUp className="w-5 h-5" />
+            <ChevronLeft className="w-5 h-5" />
           </Link>
         )}
+      </div>
+      <div className="fixed right-4 top-1/2 -translate-y-1/2 z-50">
         {nextPost && (
           <Link
             to={`/post/${nextPost.slug}`}
             className="w-10 h-10 rounded-full bg-gray-800 dark:bg-gray-700 border border-gray-600 dark:border-gray-500 flex items-center justify-center text-gray-300 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition-colors"
             title={`Next: ${nextPost.title}`}
           >
-            <ChevronDown className="w-5 h-5" />
+            <ChevronRight className="w-5 h-5" />
           </Link>
         )}
       </div>
